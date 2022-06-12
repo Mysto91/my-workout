@@ -10,9 +10,6 @@ class CardFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // $product = new Product();
-        // $manager->persist($product);
-
         for ($i=1; $i < 50; $i++) {
             $card = new Card();
             $card->setTitle("card n°{$i}");

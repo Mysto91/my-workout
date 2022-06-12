@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\CardRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ApiResource()
  * @ORM\Entity(repositoryClass=CardRepository::class)
  */
+#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'description' => 'partial'])]
 class Card
 {
     /**

@@ -1,0 +1,4 @@
+App\Entity\Card:
+    collectionOperations:
+        get:
+            filters: ['card.search_filter']
