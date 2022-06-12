@@ -11,9 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ApiResource()
+ * @ApiFilter(SearchFilter::class, properties={"title": "partial", "point", "exact", "description": "partial"})
  * @ORM\Entity(repositoryClass=CardRepository::class)
  */
-#[ApiFilter(SearchFilter::class, properties: ['title' => 'partial', 'description' => 'partial'])]
 class Card
 {
     /**
@@ -39,12 +39,12 @@ class Card
     private ?string $description;
 
     /**
-     * @ORM\Column(type="time", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private DateTimeInterface $startDate;
 
     /**
-     * @ORM\Column(type="time", nullable=true)
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private DateTimeInterface $endDate;
 

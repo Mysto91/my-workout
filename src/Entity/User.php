@@ -17,41 +17,48 @@ class User
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $firstname;
+    private string $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $email;
+    private string $email;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $apiKey;
+    private string $apiKey;
 
     /**
      * @ORM\Column(type="string", length=30)
      */
-    private $username;
+    private string $username;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $password;
+    private string $password;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    protected function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getName(): ?string
