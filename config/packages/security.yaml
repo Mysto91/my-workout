@@ -8,27 +8,34 @@ security:
         # auto hasher with custom options for all PasswordAuthenticatedUserInterface instances
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
             algorithm: 'auto'
-            cost:      15
+            cost:      4
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        users:
+            entity:
+                # the class of the entity that represents users
+                class: 'App\Entity\User'
+                # the property to query by - e.g. email, username, etc
+                property: 'username'
     firewalls:
-    #    login:
-    #        pattern: ^/api/login
-    #        stateless: true
-    #        json_login:
-    #            check_path: /api/login_check
-    #            success_handler: lexik_jwt_authentication.handler.authentication_success
-    #            failure_handler: lexik_jwt_authentication.handler.authentication_failure
-    #    api:
-    #        pattern:   ^/api
-    #        stateless: true
-    #        jwt: ~
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern:   ^/api
+            stateless: true
+            jwt: ~
         main:
 
-    #access_control:
-    #    - { path: ^/api/login, roles: PUBLIC_ACCESS }
-    #    - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+    access_control:
+        - { path: ^/api/login,  roles: PUBLIC_ACCESS }
+        - { path: ^/api,        roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/users,  roles: PUBLIC_ACCESS, methods: [POST] }
+        - { path: ^/api/users,  roles: ROLE_ADMIN, methods: [GET, PATCH, DELETE, PUT] }
 
 when@test:
     security:

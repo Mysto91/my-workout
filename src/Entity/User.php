@@ -5,12 +5,13 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ApiResource()
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
-class User
+class User implements UserInterface
 {
     /**
      * @ORM\Id
@@ -48,6 +49,12 @@ class User
      * @ORM\Column(type="string", length=255)
      */
     private string $password;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Role::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private Role $role;
 
     public function getId(): ?int
     {
@@ -131,5 +138,37 @@ class User
         $this->password = $password;
 
         return $this;
+    }
+
+    public function getRole(): ?Role
+    {
+        return $this->role;
+    }
+
+    public function setRole(?Role $role): self
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
+    }
+
+    public function getRoles(): array
+    {
+        $role = strtoupper($this->role->getLabel());
+        return ["ROLE_{$role}"];
+    }
+
+    public function getSalt(): ?string
+    {
+        return '';
     }
 }
