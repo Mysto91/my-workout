@@ -6,9 +6,24 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *      normalizationContext={
+ *          "groups"={"read:collection"}
+ *      }
+ * )
+ * @UniqueEntity(
+ *      "email",
+ *      message = "The email already exists."
+ * )
+ * @UniqueEntity(
+ *      "username",
+ *      message = "The username already exists."
+ * )
  * @ORM\Entity(repositoryClass=UserRepository::class)
  */
 class User implements UserInterface
@@ -17,21 +32,32 @@ class User implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read:collection"})
      */
     private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:collection"})
+     * @Assert\NotBlank
+     * @Assert\NotNull
      */
     private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:collection"})
+     * @Assert\NotBlank
+     * @Assert\NotNull
      */
     private string $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"read:collection"})
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email."
+     * )
      */
     private string $email;
 
@@ -42,6 +68,9 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Groups({"read:collection"})
+     * @Assert\NotBlank
+     * @Assert\NotNull
      */
     private string $username;
 

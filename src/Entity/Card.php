@@ -8,6 +8,7 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\CardRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -25,11 +26,15 @@ class Card
 
     /**
      * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank
+     * @Assert\NotNull
      */
     private string $title;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Type(type="integer")
+     * @Assert\Positive(message = "The point should be a positive integer.")
      */
     private ?int $point;
 
@@ -40,13 +45,15 @@ class Card
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Assert\Type("DateTime")
      */
-    private DateTimeInterface $startDate;
+    private ?DateTimeInterface $startDate;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Assert\Type("DateTime")
      */
-    private DateTimeInterface $endDate;
+    private ?DateTimeInterface $endDate;
 
     public function getId(): ?int
     {
