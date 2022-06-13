@@ -32,8 +32,10 @@ security:
         main:
 
     access_control:
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api,       roles: PUBLIC_ACCESS }
+        - { path: ^/api/login,  roles: PUBLIC_ACCESS }
+        - { path: ^/api,        roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/users,  roles: PUBLIC_ACCESS, methods: [POST] }
+        - { path: ^/api/users,  roles: ROLE_ADMIN, methods: [GET, PATCH, DELETE, PUT] }
 
 when@test:
     security:
