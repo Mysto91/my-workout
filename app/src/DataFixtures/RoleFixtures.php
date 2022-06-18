@@ -8,6 +8,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class RoleFixtures extends Fixture
 {
+    public const ADMIN_ROLE = 'admin';
+
     public function load(ObjectManager $manager): void
     {
         $roleLabels = [
@@ -18,6 +20,9 @@ class RoleFixtures extends Fixture
         foreach ($roleLabels as $roleLabel) {
             $role = new Role();
             $role->setLabel($roleLabel);
+            if ($roleLabel === 'admin') {
+                $this->addReference(self::ADMIN_ROLE, $role);
+            }
             $manager->persist($role);
         }
 
