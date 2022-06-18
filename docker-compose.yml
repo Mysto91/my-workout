@@ -16,6 +16,7 @@ services:
       - MYSQL_DATABASE=to_do_list
     depends_on:
       - database
+      - migration
   database:
     image: 'bitnami/mysql:5.7.38'
     environment:
@@ -23,3 +24,12 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=
       - MYSQL_DATABASE=to_do_list
+  migration:
+    image: 'chialab/php:8.1-apache'
+    volumes:
+      - '.:/app'
+    command: "php /app/app/bin/console doctrine:migration:migrate --no-interaction"
+    links:
+      - database
+    depends_on:
+      - database
