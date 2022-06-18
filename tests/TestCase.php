@@ -8,9 +8,9 @@ class TestCase extends WebTestCase
 {
     /**
      * @param string $url
-     * @param array $params
+     * @param array<string> $params
      *
-     * @return void
+     * @return string
      */
     protected function getUrlWithParams(string $url, array $params): string
     {
