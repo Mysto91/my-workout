@@ -1,0 +1,6 @@
+FROM bitnami/symfony:latest
+
+WORKDIR /app
+
+RUN composer update && \
+    php bin/console doctrine:migration:migrate

@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Tests\Service;
+namespace App\Tests\Card;
 
 use App\Tests\TestCase;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class CardGetTest extends TestCase
 {
@@ -21,7 +23,9 @@ class CardGetTest extends TestCase
     public function testSomething(): void
     {
         $client = static::createClient();
-        $client->request('GET', $this->getUrl());
+        $crawler = $client->request('GET', $this->getUrl());
+
+        dd($crawler->getResponse());
 
         $this->assertResponseIsSuccessful();
     }
