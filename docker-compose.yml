@@ -15,8 +15,8 @@ services:
       - MYSQL_PASSWORD=
       - MYSQL_DATABASE=to_do_list
     depends_on:
-      - mysql
-  mysql:
+      - database
+  database:
     image: 'bitnami/mysql:5.7.38'
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
