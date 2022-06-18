@@ -28,7 +28,11 @@ services:
     image: 'chialab/php:8.1-apache'
     volumes:
       - '.:/app'
-    command: "php /app/app/bin/console doctrine:migration:migrate --no-interaction"
+    entrypoint: ["/bin/sh","-c"]
+    command:
+      - |
+        php /app/app/bin/console doctrine:migration:migrate --no-interaction 
+        php /app/app/bin/console doctrine:fixtures:load --no-interaction
     links:
       - database
     depends_on:
