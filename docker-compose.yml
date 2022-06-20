@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   app:
@@ -6,7 +6,7 @@ services:
     ports:
       - '8000:8000'
     volumes:
-      - '.:/app'
+      - './app:/app'
     environment:
       - SYMFONY_PROJECT_NAME=app
       - MYSQL_HOST=mysql
@@ -26,11 +26,6 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=
       - MYSQL_DATABASE=to_do_list
-    healthcheck:
-      test: "mysqladmin ping -h 127.0.0.1 -u"
-      interval : 10s
-      timeout: 10s
-      retries: 10
   migration:
     image: 'chialab/php:8.1-apache'
     volumes:
@@ -38,11 +33,21 @@ services:
     entrypoint: ["/bin/sh","-c"]
     command:
       - |
-        php /app/app/bin/console doctrine:migration:migrate --no-interaction 
+        php /app/app/bin/console doctrine:migration:migrate --no-interaction
         php /app/app/bin/console doctrine:fixtures:load --no-interaction
     depends_on:
       - database
+    healthcheck:
+      test: "mysql -uroot -hdatabase"
+      interval : 10s
+      timeout: 10s
+      retries: 10
   redis:
     image: 'redis:7.0.2'
     ports:
       - '6379:6379'
+    volumes:
+      - 'redis:/redis'
+volumes:
+  app:
+  redis:
