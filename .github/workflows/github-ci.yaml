@@ -14,8 +14,8 @@ jobs:
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --prefer-dist
+        run: composer app/install -q --no-ansi --no-interaction --prefer-dist
       - name: phpstan
-        run: vendor/bin/phpstan analyse
+        run: app/vendor/bin/phpstan analyse
       - name: php-cs-fixer
-        run: vendor/bin/php-cs-fixer fix --dry-run -v --diff
+        run: app/vendor/bin/php-cs-fixer fix --dry-run -v --diff
