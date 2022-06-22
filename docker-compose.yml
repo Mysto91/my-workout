@@ -8,7 +8,8 @@ services:
     ports:
       - '8000:8000'
     volumes:
-      - './:/app:cached'
+      - './:/app'
+      - vendor:/app/app/vendor
     environment:
       - SYMFONY_PROJECT_NAME=app
       - MYSQL_HOST=mysql
@@ -19,7 +20,7 @@ services:
     depends_on:
       - database
       - migration
-    entrypoint: ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+    entrypoint: /app/app/entrypoint.sh
   database:
     image: 'bitnami/mysql:5.7.38'
     restart: always
@@ -53,5 +54,6 @@ services:
       - 'redis:/redis'
 volumes:
   app:
+  vendor:
   redis:
   database:
