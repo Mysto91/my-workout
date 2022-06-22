@@ -3,8 +3,6 @@
 namespace App\Tests\Card;
 
 use App\Tests\TestCase;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class CardGetTest extends TestCase
 {
@@ -20,13 +18,23 @@ class CardGetTest extends TestCase
         return $this->getUrlWithParams($this->url, $params);
     }
 
-    public function testSomething(): void
+    public function testIfGetWork()
     {
-        $client = static::createClient();
-        $crawler = $client->request('GET', $this->getUrl());
+        $this->client->request('GET', $this->getUrl() , [], [], ['HTTP_Authorization' => $this->jwt, 'CONTENT_TYPE' => 'application/json']);
 
-        dd($crawler->getResponse());
+        $response = $this->client->getResponse();
 
-        $this->assertResponseIsSuccessful();
+        $this->assertResponseCode($response, 200);
+        $this->assertJson(json_encode(['code' => '401', 'message' => 'JWT Token not found']));
+    }
+
+    public function testIfGetWithoutAuthenticationNotWork(): void
+    {
+        $this->client->request('GET', $this->getUrl());
+        
+        $response = $this->client->getResponse();
+
+        $this->assertResponseCode($response, 401);
+        $this->assertJson(json_encode(['code' => '401', 'message' => 'JWT Token not found']));
     }
 }
