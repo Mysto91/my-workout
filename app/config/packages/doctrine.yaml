@@ -16,14 +16,14 @@ doctrine:
                 prefix: 'App\Entity'
                 alias: App
 
-when@test:
-    doctrine:
-        dbal:
-            connections:
-                default:
-                    driver: 'pdo_sqlite'
-                    url: '%env(resolve:DATABASE_URL)%'
-                    memory: true
+# when@test:
+#     doctrine:
+#         dbal:
+#             connections:
+#                 default:
+#                     driver: 'pdo_sqlite'
+#                     url: '%env(resolve:DATABASE_URL)%'
+#                     memory: true
 
 when@prod:
     doctrine:
