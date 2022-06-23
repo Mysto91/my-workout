@@ -25,7 +25,4 @@ jobs:
         run: vendor/bin/php-cs-fixer fix --dry-run -v --diff
       - name: phpunit
         working-directory: ./app
-        run: |
-          - php bin/console
-          - php bin/console lexik:jwt:generate-keypair
-          - vendor/bin/phpunit -d memory_limit=512M
+        run: php bin/console
