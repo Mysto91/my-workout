@@ -6,7 +6,7 @@ use App\Tests\TestCase;
 
 class CardGetTest extends TestCase
 {
-    private string $url = 'api/cards';
+    private string $url = '/api/cards';
 
     /**
      * @param array<string> $params

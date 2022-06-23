@@ -22,7 +22,7 @@ class TestCase extends JsonApiTestCase
         $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
 
         $this->initDatabase();
-        $this->jwt = $this->getJWT();
+        $this->jwt = "Bearer " . $this->getJWT();
     }
 
     /**
@@ -88,7 +88,7 @@ class TestCase extends JsonApiTestCase
 
         $response = json_decode($this->client->getResponse()->getContent(), true);
 
-        return $response['token'] ?? null;
+        return $response['token'] ?? '';
     }
 
     protected function tearDown(): void
