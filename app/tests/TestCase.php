@@ -47,6 +47,19 @@ class TestCase extends JsonApiTestCase
     }
 
     /**
+     * @param string $jwt
+     *
+     * @return array<string>
+     */
+    protected function getHeaders(string $jwt = ''): array
+    {
+        return [
+            'HTTP_Authorization' => $jwt,
+            'CONTENT_TYPE' => 'application/json'
+        ];
+    }
+
+    /**
      * @return void
      */
     protected function initDatabase(): void
@@ -59,13 +72,13 @@ class TestCase extends JsonApiTestCase
     }
 
     /**
-     * @param array $body
+     * @param array<string> $body
      *
      * @return string
      */
     protected function getJWT(array $body = []): string
     {
-        if(empty($body)) {
+        if (empty($body)) {
             $body = [
                 'username' => 'admin',
                 'password' => 'admin'
@@ -78,12 +91,7 @@ class TestCase extends JsonApiTestCase
             [],
             [],
             ['CONTENT_TYPE' => 'application/json'],
-            json_encode(
-                [
-                    'username' => 'admin',
-                    'password' => 'admin'
-                ]
-            )
+            json_encode($body)
         );
 
         $response = json_decode($this->client->getResponse()->getContent(), true);
