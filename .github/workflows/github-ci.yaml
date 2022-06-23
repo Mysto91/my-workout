@@ -26,6 +26,6 @@ jobs:
       - name: phpunit
         working-directory: ./app
         run: |
-          - ls
+          - php bin/console
           - php bin/console lexik:jwt:generate-keypair
           - vendor/bin/phpunit -d memory_limit=512M
