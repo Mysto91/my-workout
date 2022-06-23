@@ -2,10 +2,29 @@
 
 namespace App\Tests;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use ApiTestCase\JsonApiTestCase;
+use App\DataFixtures\CardFixtures;
+use App\DataFixtures\RoleFixtures;
+use App\DataFixtures\UserFixtures;
+use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 
-class TestCase extends WebTestCase
+class TestCase extends JsonApiTestCase
 {
+    /** @var AbstractDatabaseTool */
+    protected $databaseTool;
+
+    protected string $jwt;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
+
+        $this->initDatabase();
+        $this->jwt = "Bearer " . $this->getJWT();
+    }
+
     /**
      * @param string $url
      * @param array<string> $params
@@ -25,5 +44,64 @@ class TestCase extends WebTestCase
         }
 
         return "{$url}?{$paramsConcat}";
+    }
+
+    /**
+     * @param string $jwt
+     *
+     * @return array<string>
+     */
+    protected function getHeaders(string $jwt = ''): array
+    {
+        return [
+            'HTTP_Authorization' => $jwt,
+            'CONTENT_TYPE' => 'application/json'
+        ];
+    }
+
+    /**
+     * @return void
+     */
+    protected function initDatabase(): void
+    {
+        $this->databaseTool->loadFixtures([
+            RoleFixtures::class,
+            UserFixtures::class,
+            CardFixtures::class
+        ]);
+    }
+
+    /**
+     * @param array<string> $body
+     *
+     * @return string
+     */
+    protected function getJWT(array $body = []): string
+    {
+        if (empty($body)) {
+            $body = [
+                'username' => 'admin',
+                'password' => 'admin'
+            ];
+        }
+
+        $this->client->request(
+            'POST',
+            '/api/login_check',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode($body)
+        );
+
+        $response = json_decode($this->client->getResponse()->getContent(), true);
+
+        return $response['token'] ?? '';
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        unset($this->databaseTool);
     }
 }

@@ -27,7 +27,7 @@ final class UserDataPersister implements DataPersisterInterface
         return $data instanceof User;
     }
 
-    public function persist($data)
+    public function persist($data): void
     {
         if ($data->getPassword()) {
             $data->setPassword(
