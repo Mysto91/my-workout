@@ -82,9 +82,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\ManyToOne(targetEntity=Role::class)
+     * @Assert\NotNull
      * @ORM\JoinColumn(nullable=false)
      */
-    private Role $role;
+    private ?Role $role = null;
 
     public function getId(): ?int
     {
