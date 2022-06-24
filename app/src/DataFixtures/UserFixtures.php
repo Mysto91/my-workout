@@ -35,7 +35,7 @@ class UserFixtures extends Fixture
         $visitorUser = new User();
 
         $visitorUser->setEmail($faker->email())
-            ->setUsername('admin')
+            ->setUsername('visitor')
             ->setPassword($this->userPasswordEncoder->hashPassword($visitorUser, 'visitor'))
             ->setName($faker->name())
             ->setFirstname($faker->firstName())

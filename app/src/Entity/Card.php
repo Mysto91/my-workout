@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
- * @ApiFilter(SearchFilter::class, properties={"title": "partial", "point" : "exact", "description": "partial"})
+ * @ApiFilter(SearchFilter::class, properties={"title": "word_start", "point" : "exact", "description": "word_start"})
  * @ORM\Entity(repositoryClass=CardRepository::class)
  */
 class Card
