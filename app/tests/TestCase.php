@@ -97,4 +97,18 @@ class TestCase extends JsonApiTestCase
         $this->client->request('GET', $url, $params, [], $headers);
         return $this->client->getResponse();
     }
+
+    /**
+     * @param string $url
+     * @param array<string,string|int> $headers
+     * @param array<string,string|int> $params
+     * @param array<string,string|array<string,mixed>> $body
+     *
+     * @return Response
+     */
+    protected function httpPost(string $url, array $headers = [], array $params = [], array $body = []): Response
+    {
+        $this->client->request('POST', $url, $params, [], $headers, json_encode($body));
+        return $this->client->getResponse();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Validator;
 
+use App\Entity\Role as EntityRole;
 use Symfony\Component\Validator\Constraint;
 
 /**
@@ -16,6 +17,14 @@ class Role extends Constraint
      * Then, use these in your validator class.
      */
     public string $message = 'The role "{{ value }}" is not valid.';
-    public string $invalidFormatMessage = 'The role is not in valid format.';
-    public string $notExistingMessage = 'The role does not exist.';
+    public string $invalidFormatMessage = 'role: The role is not in valid format.';
+    public string $notExistingMessage = 'role: The role does not exist.';
+
+    /**
+     * @return string
+     */
+    public function validatedBy(): string
+    {
+        return static::class . 'Validator';
+    }
 }

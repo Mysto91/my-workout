@@ -26,7 +26,7 @@ final class UserDataPersister implements DataPersisterInterface
         return $data instanceof User;
     }
 
-    public function persist($data): void
+    public function persist($data): User
     {
         if ($data->getPassword()) {
             $data->setPassword(
@@ -42,6 +42,8 @@ final class UserDataPersister implements DataPersisterInterface
 
         $this->entityManager->persist($data);
         $this->entityManager->flush();
+
+        return $data;
     }
 
     public function remove($data): void
