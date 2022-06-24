@@ -63,7 +63,7 @@ class UserPostTest extends TestCase
         $response = $this->httpPost($this->url, $this->getHeaders(), [], $body);
         $output = json_decode($response->getContent(), true);
 
-        $this->assertResponseCode($response, 400);
+        $this->assertResponseCode($response, 422);
         $this->assertSame('role: The role is not in valid format.', $output['detail']);
     }
 
@@ -77,7 +77,7 @@ class UserPostTest extends TestCase
         $response = $this->httpPost($this->url, $this->getHeaders(), [], $body);
         $output = json_decode($response->getContent(), true);
 
-        $this->assertResponseCode($response, 400);
+        $this->assertResponseCode($response, 422);
         $this->assertSame('role: The role does not exist.', $output['detail']);
     }
 

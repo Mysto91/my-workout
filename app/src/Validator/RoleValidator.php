@@ -26,7 +26,10 @@ class RoleValidator extends ConstraintValidator
 
         if (empty((array)$role)) {
             /** @phpstan-ignore-next-line */
-            throw new BadRequestException($constraint->invalidFormatMessage, 1);
+            $this->context->buildViolation($constraint->invalidFormatMessage)
+                ->setParameter('{{ value }}', json_encode($role))
+                ->addViolation();
+            return;
         }
 
         /** @phpstan-ignore-next-line */
@@ -34,12 +37,9 @@ class RoleValidator extends ConstraintValidator
 
         if (!$role) {
             /** @phpstan-ignore-next-line */
-            throw new BadRequestException($constraint->notExistingMessage, 1);
+            $this->context->buildViolation($constraint->notExistingMessage)
+                ->setParameter('{{ value }}', json_encode($role))
+                ->addViolation();
         }
-
-        // // TODO: implement the validation here
-        // $this->context->buildViolation($constraint->message)
-        //     ->setParameter('{{ value }}', json_encode($role))
-        //     ->addViolation();
     }
 }
