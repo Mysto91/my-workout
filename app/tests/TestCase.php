@@ -17,12 +17,18 @@ class TestCase extends JsonApiTestCase
 
     protected string $jwt;
 
+    protected static $initialized = false;
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
 
-        $this->initDatabase();
+        if (!self::$initialized) {
+            $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
+            $this->initDatabase();
+            self::$initialized = true;
+        }
+
         $this->jwt = "Bearer " . $this->getJWT();
     }
 
