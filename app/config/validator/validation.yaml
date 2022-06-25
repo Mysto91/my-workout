@@ -1,0 +1,4 @@
+App\Entity\User:
+    properties:
+        role:
+            - App\Validator\Role: ~

@@ -35,21 +35,9 @@ class CardGetTest extends TestCase
         $this->assertIsString($card['endDate']);
     }
 
-    /**
-     * @param array<string> $params
-     *
-     * @return string
-     */
-    public function getUrl(array $params = []): string
-    {
-        return $this->getUrlWithParams($this->url, $params);
-    }
-
     public function testIfGetWork(): void
     {
-        $this->client->request('GET', $this->getUrl(), [], [], $this->getHeaders($this->jwt));
-
-        $response = $this->client->getResponse();
+        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt));
         $cards = json_decode($response->getContent(), true);
 
         $this->assertCount(10, $cards);
@@ -57,9 +45,73 @@ class CardGetTest extends TestCase
         $this->assertCards($cards);
     }
 
+    public function testIfGetWithPaginationWork(): void
+    {
+        $params = [
+            'page' => 2
+        ];
+
+        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt), $params);
+
+        $cards = json_decode($response->getContent(), true);
+
+        $this->assertCount(10, $cards);
+        $this->assertSame($cards[0]['id'], 11);
+        $this->assertSame($cards[count($cards) - 1]['id'], 20);
+        $this->assertResponseCode($response, 200);
+    }
+
+    public function testIfGetWithParamPointWork(): void
+    {
+        $params = [
+            'point' => 5
+        ];
+
+        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt), $params);
+
+        $cards = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertContainsEquals($params['point'], array_column($cards, 'point'));
+    }
+
+    public function testIfGetWithParamTitleWork(): void
+    {
+        $params = [
+            'title' => 'Ms'
+        ];
+
+        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt), $params);
+
+        $cards = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 200);
+
+        foreach ($cards as $card) {
+            $this->assertStringContainsString($params['title'], $card['title']);
+        }
+    }
+
+    public function testIfGetWithParamDescriptionWork(): void
+    {
+        $params = [
+            'description' => 'vol'
+        ];
+
+        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt), $params);
+
+        $cards = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 200);
+
+        foreach ($cards as $card) {
+            $this->assertStringContainsString($params['description'], strtolower($card['description']));
+        }
+    }
+
     public function testIfGetWithoutAuthenticationNotWork(): void
     {
-        $this->client->request('GET', $this->getUrl());
+        $this->client->request('GET', $this->url);
 
         $response = $this->client->getResponse();
 

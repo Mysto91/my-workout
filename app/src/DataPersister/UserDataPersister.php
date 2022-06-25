@@ -6,7 +6,6 @@ use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use App\Entity\User;
 use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserDataPersister implements DataPersisterInterface
@@ -27,7 +26,7 @@ final class UserDataPersister implements DataPersisterInterface
         return $data instanceof User;
     }
 
-    public function persist($data): void
+    public function persist($data): User
     {
         if ($data->getPassword()) {
             $data->setPassword(
@@ -39,14 +38,12 @@ final class UserDataPersister implements DataPersisterInterface
         /** @phpstan-ignore-next-line */
         $role = $this->roleRepository->findByLabel($data->getRole()->getLabel());
 
-        if (!$role) {
-            throw new BadRequestException("The role does not exist.", 1);
-        }
-
         $data->setRole($role[0]);
 
         $this->entityManager->persist($data);
         $this->entityManager->flush();
+
+        return $data;
     }
 
     public function remove($data): void
