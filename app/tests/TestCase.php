@@ -17,7 +17,7 @@ class TestCase extends JsonApiTestCase
 
     protected string $jwt;
 
-    protected static $initialized = false;
+    protected static bool $initialized = false;
 
     protected function setUp(): void
     {
