@@ -15,6 +15,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *      normalizationContext={
  *          "groups"={"read:collection"}
+ *      },
+ *      itemOperations={
+ *          "get" = {
+ *              "security" = "is_granted('USER_READ', object)",
+ *              "security_message" = "Access denied.",
+ *           },
+ *          "put" = {
+ *              "security" = "is_granted('USER_EDIT', object)",
+ *              "security_message" = "Access denied.",
+ *           },
+ *          "delete" = {
+ *              "security" = "is_granted('USER_DELETE', object)",
+ *              "security_message" = "Access denied.",
+ *           },
+ *          "post"
  *      }
  * )
  * @UniqueEntity(

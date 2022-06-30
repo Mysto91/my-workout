@@ -111,9 +111,7 @@ class CardGetTest extends TestCase
 
     public function testIfGetWithoutAuthenticationNotWork(): void
     {
-        $this->client->request('GET', $this->url);
-
-        $response = $this->client->getResponse();
+        $response = $this->httpGet($this->url, $this->getHeaders());
 
         $this->assertResponseCode($response, 401);
         $this->assertJson(json_encode(['code' => '401', 'message' => 'JWT Token not found']));
