@@ -28,8 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "delete" = {
  *              "security" = "is_granted('USER_DELETE', object)",
  *              "security_message" = "Access Denied.",
- *           },
- *          "post"
+ *           }
  *      }
  * )
  * @UniqueEntity(
