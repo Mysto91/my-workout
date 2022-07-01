@@ -8,7 +8,12 @@ class UserGetByIdTest extends TestCase
 {
     private string $url = '/api/users';
 
-    private function getUrl($userId)
+    /**
+     * @param integer $userId
+     *
+     * @return string
+     */
+    private function getUrl(int $userId): string
     {
         return "{$this->url}/{$userId}";
     }
