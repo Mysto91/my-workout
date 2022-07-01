@@ -59,7 +59,7 @@ class UserPutTest extends TestCase
         $body['username'] = 'visitor_3';
         $body['password'] = 'visitor';
 
-        $response = $this->httpPut($this->getUrl($this->userVisitorId + 1), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userVisitorId + 1), $this->getHeaders($this->token), [], $body);
         $output = json_decode($response->getContent(), true);
 
         $this->assertResponseCode($response, 200);
@@ -69,7 +69,7 @@ class UserPutTest extends TestCase
     public function testIfPutOwnUserWithVisitorUserWork(): void
     {
         $body = $this->formatBody();
-        $jwt = $this->getJWT($this->authenticate("visitor_3", 'visitor'));
+        $jwt = $this->getToken($this->authenticate("visitor_3", 'visitor'));
 
         $response = $this->httpPut($this->getUrl($this->userVisitorId + 1), $this->getHeaders($jwt), [], $body);
         $output = json_decode($response->getContent(), true);
@@ -83,7 +83,7 @@ class UserPutTest extends TestCase
         $body = $this->formatBody();
         $body['role'] = [];
 
-        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->token), [], $body);
         $output = json_decode($response->getContent(), true);
 
         $this->assertResponseCode($response, 422);
@@ -97,7 +97,7 @@ class UserPutTest extends TestCase
             'label' => 'wrong'
         ];
 
-        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->token), [], $body);
         $output = json_decode($response->getContent(), true);
 
         $this->assertResponseCode($response, 422);
@@ -109,7 +109,7 @@ class UserPutTest extends TestCase
         $body = $this->formatBody();
         $body['username'] = 'visitor_2';
 
-        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->token), [], $body);
 
         $output = json_decode($response->getContent(), true);
 
@@ -122,7 +122,7 @@ class UserPutTest extends TestCase
         $body = $this->formatBody();
         $body['email'] = 'visitor_2@visitor.com';
 
-        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->token), [], $body);
 
         $output = json_decode($response->getContent(), true);
 
@@ -135,7 +135,7 @@ class UserPutTest extends TestCase
         $body = $this->formatBody();
         $body['username'] = '';
 
-        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->token), [], $body);
 
         $output = json_decode($response->getContent(), true);
 
@@ -148,7 +148,7 @@ class UserPutTest extends TestCase
         $body = $this->formatBody();
         $body['password'] = '';
 
-        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->token), [], $body);
 
         $output = json_decode($response->getContent(), true);
 
@@ -161,7 +161,7 @@ class UserPutTest extends TestCase
         $body = $this->formatBody();
         $body['name'] = '';
 
-        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->token), [], $body);
 
         $output = json_decode($response->getContent(), true);
 
@@ -174,7 +174,7 @@ class UserPutTest extends TestCase
         $body = $this->formatBody();
         $body['firstname'] = '';
 
-        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->token), [], $body);
 
         $output = json_decode($response->getContent(), true);
 
@@ -187,7 +187,7 @@ class UserPutTest extends TestCase
         $body = $this->formatBody();
         $body['email'] = '';
 
-        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->token), [], $body);
 
         $output = json_decode($response->getContent(), true);
 
@@ -200,7 +200,7 @@ class UserPutTest extends TestCase
         $body = $this->formatBody();
         $body['email'] = 'wrong';
 
-        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->jwt), [], $body);
+        $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($this->token), [], $body);
 
         $output = json_decode($response->getContent(), true);
 
@@ -211,7 +211,7 @@ class UserPutTest extends TestCase
     public function testIfPutAnotherUserWithVisitorUserNotWork(): void
     {
         $body = $this->formatBody();
-        $jwt = $this->getJWT($this->authenticate('visitor_2', 'visitor'));
+        $jwt = $this->getToken($this->authenticate('visitor_2', 'visitor'));
 
         $response = $this->httpPut($this->getUrl($this->userAdminId), $this->getHeaders($jwt), [], $body);
 

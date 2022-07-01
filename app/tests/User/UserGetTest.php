@@ -38,7 +38,7 @@ class UserGetTest extends TestCase
 
     public function testIfGetWork(): void
     {
-        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt));
+        $response = $this->httpGet($this->url, $this->getHeaders($this->token));
         $users = json_decode($response->getContent(), true);
 
         $this->assertNotEquals(0, $users);
@@ -48,7 +48,7 @@ class UserGetTest extends TestCase
 
     public function testIfGetWithVisitorUserNotWork(): void
     {
-        $jwt = $this->getJWT(['username' => "visitor_{$this->userVisitorId}", 'password' => 'visitor']);
+        $jwt = $this->getToken(['username' => "visitor_{$this->userVisitorId}", 'password' => 'visitor']);
 
         $response = $this->httpGet($this->url, $this->getHeaders($jwt));
 

@@ -37,7 +37,7 @@ class CardGetTest extends TestCase
 
     public function testIfGetWork(): void
     {
-        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt));
+        $response = $this->httpGet($this->url, $this->getHeaders($this->token));
         $cards = json_decode($response->getContent(), true);
 
         $this->assertCount(10, $cards);
@@ -51,7 +51,7 @@ class CardGetTest extends TestCase
             'page' => 2
         ];
 
-        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt), $params);
+        $response = $this->httpGet($this->url, $this->getHeaders($this->token), $params);
 
         $cards = json_decode($response->getContent(), true);
 
@@ -67,7 +67,7 @@ class CardGetTest extends TestCase
             'point' => 5
         ];
 
-        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt), $params);
+        $response = $this->httpGet($this->url, $this->getHeaders($this->token), $params);
 
         $cards = json_decode($response->getContent(), true);
 
@@ -81,7 +81,7 @@ class CardGetTest extends TestCase
             'title' => 'Ms'
         ];
 
-        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt), $params);
+        $response = $this->httpGet($this->url, $this->getHeaders($this->token), $params);
 
         $cards = json_decode($response->getContent(), true);
 
@@ -98,7 +98,7 @@ class CardGetTest extends TestCase
             'description' => 'vol'
         ];
 
-        $response = $this->httpGet($this->url, $this->getHeaders($this->jwt), $params);
+        $response = $this->httpGet($this->url, $this->getHeaders($this->token), $params);
 
         $cards = json_decode($response->getContent(), true);
 

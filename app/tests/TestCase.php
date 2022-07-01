@@ -15,7 +15,7 @@ class TestCase extends JsonApiTestCase
     /** @var AbstractDatabaseTool */
     protected $databaseTool;
 
-    protected string $jwt;
+    protected string $token;
 
     protected int $userAdminId = 1;
 
@@ -33,7 +33,7 @@ class TestCase extends JsonApiTestCase
             self::$initialized = true;
         }
 
-        $this->jwt = $this->getJWT();
+        $this->token = $this->getToken();
     }
 
     /**
@@ -80,7 +80,7 @@ class TestCase extends JsonApiTestCase
      *
      * @return string
      */
-    protected function getJWT(array $body = []): string
+    protected function getToken(array $body = []): string
     {
         if (empty($body)) {
             $body = $this->authenticate('admin', 'admin');
