@@ -11,6 +11,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserFixtures extends Fixture
 {
     private UserPasswordHasherInterface $userPasswordEncoder;
+    private int $userAdminId = 1;
+    private int $userVisitorId = 2;
 
     public function __construct(UserPasswordHasherInterface $userPasswordEncoder)
     {
@@ -23,7 +25,9 @@ class UserFixtures extends Fixture
 
         $adminUser = new User();
 
-        $adminUser->setEmail($faker->email())
+        $adminUser
+            ->setId($this->userAdminId)
+            ->setEmail($faker->email())
             ->setUsername('admin')
             ->setPassword($this->userPasswordEncoder->hashPassword($adminUser, 'admin'))
             ->setName($faker->name())
@@ -32,16 +36,24 @@ class UserFixtures extends Fixture
 
         $manager->persist($adminUser);
 
-        $visitorUser = new User();
+        $userId = $this->userVisitorId;
 
-        $visitorUser->setEmail($faker->email())
-            ->setUsername('visitor')
-            ->setPassword($this->userPasswordEncoder->hashPassword($visitorUser, 'visitor'))
-            ->setName($faker->name())
-            ->setFirstname($faker->firstName())
-            ->setRole($this->getReference(RoleFixtures::VISITOR_ROLE));
+        for ($i = 0; $i < 3; $i++) {
+            $visitorUser = new User();
 
-        $manager->persist($visitorUser);
+            $visitorUser
+                ->setId($userId)
+                ->setEmail($faker->email())
+                ->setUsername("visitor_{$userId}")
+                ->setPassword($this->userPasswordEncoder->hashPassword($visitorUser, 'visitor'))
+                ->setName($faker->name())
+                ->setFirstname($faker->firstName())
+                ->setRole($this->getReference(RoleFixtures::VISITOR_ROLE));
+
+            $manager->persist($visitorUser);
+
+            $userId++;
+        }
 
         $manager->flush();
     }

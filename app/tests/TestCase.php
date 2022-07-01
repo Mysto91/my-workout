@@ -17,6 +17,10 @@ class TestCase extends JsonApiTestCase
 
     protected string $jwt;
 
+    protected int $userAdminId = 1;
+
+    protected int $userVisitorId = 2;
+
     protected static bool $initialized = false;
 
     protected function setUp(): void
@@ -29,7 +33,7 @@ class TestCase extends JsonApiTestCase
             self::$initialized = true;
         }
 
-        $this->jwt = "Bearer " . $this->getJWT();
+        $this->jwt = $this->getJWT();
     }
 
     /**
@@ -40,7 +44,7 @@ class TestCase extends JsonApiTestCase
     protected function getHeaders(string $jwt = ''): array
     {
         return [
-            'HTTP_Authorization' => $jwt,
+            'HTTP_Authorization' => "Bearer {$jwt}",
             'CONTENT_TYPE' => 'application/json'
         ];
     }
@@ -58,6 +62,20 @@ class TestCase extends JsonApiTestCase
     }
 
     /**
+     * @param string $username
+     * @param string $password
+     *
+     * @return array<string>
+     */
+    protected function authenticate(string $username, string $password): array
+    {
+        return [
+            'username' => $username,
+            'password' => $password
+        ];
+    }
+
+    /**
      * @param array<string> $body
      *
      * @return string
@@ -65,10 +83,7 @@ class TestCase extends JsonApiTestCase
     protected function getJWT(array $body = []): string
     {
         if (empty($body)) {
-            $body = [
-                'username' => 'admin',
-                'password' => 'admin'
-            ];
+            $body = $this->authenticate('admin', 'admin');
         }
 
         $this->client->request(
