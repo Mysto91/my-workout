@@ -3,7 +3,6 @@
 namespace App\Validator;
 
 use App\Repository\RoleRepository;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -18,8 +17,6 @@ class RoleValidator extends ConstraintValidator
 
     public function validate($role, Constraint $constraint): void
     {
-        /* @var App\Validator\Role $constraint */
-
         if (null === $role || '' === $role) {
             return;
         }

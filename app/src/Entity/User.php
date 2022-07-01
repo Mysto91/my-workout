@@ -15,6 +15,21 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ApiResource(
  *      normalizationContext={
  *          "groups"={"read:collection"}
+ *      },
+ *      itemOperations={
+ *          "get" = {
+ *              "security" = "is_granted('USER_READ', object)",
+ *              "security_message" = "Access Denied.",
+ *           },
+ *          "put" = {
+ *              "security" = "is_granted('USER_EDIT', object)",
+ *              "security_message" = "Access Denied.",
+ *           },
+ *          "delete" = {
+ *              "security" = "is_granted('USER_DELETE', object)",
+ *              "security_message" = "Access Denied.",
+ *           },
+ *          "post"
  *      }
  * )
  * @UniqueEntity(
@@ -96,7 +111,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
-    protected function setId(int $id): self
+    public function setId(int $id): self
     {
         $this->id = $id;
 

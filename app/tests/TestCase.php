@@ -15,7 +15,11 @@ class TestCase extends JsonApiTestCase
     /** @var AbstractDatabaseTool */
     protected $databaseTool;
 
-    protected string $jwt;
+    protected string $token;
+
+    protected int $userAdminId = 1;
+
+    protected int $userVisitorId = 2;
 
     protected static bool $initialized = false;
 
@@ -29,7 +33,7 @@ class TestCase extends JsonApiTestCase
             self::$initialized = true;
         }
 
-        $this->jwt = "Bearer " . $this->getJWT();
+        $this->token = $this->getToken();
     }
 
     /**
@@ -40,7 +44,7 @@ class TestCase extends JsonApiTestCase
     protected function getHeaders(string $jwt = ''): array
     {
         return [
-            'HTTP_Authorization' => $jwt,
+            'HTTP_Authorization' => "Bearer {$jwt}",
             'CONTENT_TYPE' => 'application/json'
         ];
     }
@@ -58,17 +62,28 @@ class TestCase extends JsonApiTestCase
     }
 
     /**
+     * @param string $username
+     * @param string $password
+     *
+     * @return array<string>
+     */
+    protected function authenticate(string $username, string $password): array
+    {
+        return [
+            'username' => $username,
+            'password' => $password
+        ];
+    }
+
+    /**
      * @param array<string> $body
      *
      * @return string
      */
-    protected function getJWT(array $body = []): string
+    protected function getToken(array $body = []): string
     {
         if (empty($body)) {
-            $body = [
-                'username' => 'admin',
-                'password' => 'admin'
-            ];
+            $body = $this->authenticate('admin', 'admin');
         }
 
         $this->client->request(
@@ -115,6 +130,20 @@ class TestCase extends JsonApiTestCase
     protected function httpPost(string $url, array $headers = [], array $params = [], array $body = []): Response
     {
         $this->client->request('POST', $url, $params, [], $headers, json_encode($body));
+        return $this->client->getResponse();
+    }
+
+    /**
+     * @param string $url
+     * @param array<string,string|int> $headers
+     * @param array<string,string|int> $params
+     * @param array<string,string|array<string,mixed>> $body
+     *
+     * @return Response
+     */
+    protected function httpPut(string $url, array $headers = [], array $params = [], array $body = []): Response
+    {
+        $this->client->request('PUT', $url, $params, [], $headers, json_encode($body));
         return $this->client->getResponse();
     }
 }
