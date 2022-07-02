@@ -3,23 +3,19 @@
 namespace App\DataPersister;
 
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use App\Entity\Measure;
 use App\Entity\User;
 use App\Repository\RoleRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class UserDataPersister implements ContextAwareDataPersisterInterface
+final class MeasureDataPersister implements ContextAwareDataPersisterInterface
 {
     private EntityManagerInterface $entityManager;
-    private UserPasswordHasherInterface $userPasswordEncoder;
-    private RoleRepository $roleRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordEncoder, RoleRepository $roleRepository)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->userPasswordEncoder = $userPasswordEncoder;
-        $this->roleRepository = $roleRepository;
     }
 
     /**
@@ -30,31 +26,18 @@ final class UserDataPersister implements ContextAwareDataPersisterInterface
      */
     public function supports($data, array $context = []): bool
     {
-        return $data instanceof User;
+        return $data instanceof Measure;
     }
 
     /**
      * @param mixed $data
      * @param array<string> $context
      *
-     * @return User
+     * @return Measure
      */
-    public function persist($data, array $context = []): User
+    public function persist($data, array $context = []): Measure
     {
-        if ($data->getPassword()) {
-            $data->setPassword(
-                $this->userPasswordEncoder->hashPassword($data, $data->getPassword())
-            );
-            $data->eraseCredentials();
-        }
-
-        /** @phpstan-ignore-next-line */
-        $role = $this->roleRepository->findByLabel($data->getRole()->getLabel());
-
-        $data->setRole($role[0]);
-
         $data->setCreatedAt(new DateTimeImmutable());
-
         $this->entityManager->persist($data);
         $this->entityManager->flush();
 

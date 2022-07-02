@@ -13,13 +13,13 @@ class CardFixtures extends Fixture
     {
         $faker = Factory::create();
 
-        for ($i=1; $i < 50; $i++) {
+        for ($i = 1; $i < 50; $i++) {
             $card = new Card();
-            $card->setTitle($faker->name());
-            $card->setDescription($faker->text());
-            $card->setPoint($faker->randomElement([1, 2, 3, 5, 8, 13, 20]));
-            $card->setStartDate($faker->dateTimeBetween());
-            $card->setEndDate($faker->dateTimeBetween('+1 year', '+2 year'));
+            $card->setTitle($faker->name())
+                ->setDescription($faker->text())
+                ->setPoint($faker->randomElement([1, 2, 3, 5, 8, 13, 20]))
+                ->setStartDate($faker->dateTimeBetween())
+                ->setEndDate($faker->dateTimeBetween('+1 year', '+2 year'));
             $manager->persist($card);
         }
 

@@ -16,7 +16,7 @@ services:
       - MYSQL_PORT_NUMBER=3306
       - MYSQL_USER=root
       - MYSQL_PASSWORD=
-      - MYSQL_DATABASE=to_do_list
+      - MYSQL_DATABASE=my_workout
     depends_on:
       - database
       - migration
@@ -30,7 +30,7 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
       - MYSQL_USER=root
       - MYSQL_PASSWORD=
-      - MYSQL_DATABASE=to_do_list
+      - MYSQL_DATABASE=my_workout
     volumes:
       - 'database:/database'
   migration:
