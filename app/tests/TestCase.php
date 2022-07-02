@@ -4,6 +4,7 @@ namespace App\Tests;
 
 use ApiTestCase\JsonApiTestCase;
 use App\DataFixtures\CardFixtures;
+use App\DataFixtures\MeasureFixtures;
 use App\DataFixtures\RoleFixtures;
 use App\DataFixtures\UserFixtures;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
@@ -30,10 +31,11 @@ class TestCase extends JsonApiTestCase
         if (!self::$initialized) {
             $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
             $this->initDatabase();
+            putenv("JWT={$this->getToken()}");
             self::$initialized = true;
         }
 
-        $this->token = $this->getToken();
+        $this->token = getenv('JWT');
     }
 
     /**
@@ -57,7 +59,8 @@ class TestCase extends JsonApiTestCase
         $this->databaseTool->loadFixtures([
             RoleFixtures::class,
             UserFixtures::class,
-            CardFixtures::class
+            CardFixtures::class,
+            MeasureFixtures::class
         ]);
     }
 

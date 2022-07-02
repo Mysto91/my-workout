@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -33,7 +34,9 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             ->setPassword($this->userPasswordEncoder->hashPassword($adminUser, 'admin'))
             ->setName($faker->name())
             ->setFirstname($faker->firstName())
-            ->setRole($this->getReference(RoleFixtures::ADMIN_ROLE));
+            ->setRole($this->getReference(RoleFixtures::ADMIN_ROLE))
+            ->setCreatedAt(new DateTimeImmutable())
+            ;
 
         $manager->persist($adminUser);
 
@@ -49,7 +52,9 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
                 ->setPassword($this->userPasswordEncoder->hashPassword($visitorUser, 'visitor'))
                 ->setName($faker->name())
                 ->setFirstname($faker->firstName())
-                ->setRole($this->getReference(RoleFixtures::VISITOR_ROLE));
+                ->setRole($this->getReference(RoleFixtures::VISITOR_ROLE))
+                ->setCreatedAt(new DateTimeImmutable())
+                ;
 
             $manager->persist($visitorUser);
 

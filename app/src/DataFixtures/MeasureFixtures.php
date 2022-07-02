@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Measure;
 use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -30,7 +31,10 @@ class MeasureFixtures extends Fixture implements DependentFixtureInterface
                 ->setMeasurementDate($faker->dateTimeBetween('-1 year', '-1 day'))
                 ->setBoneMass($faker->randomFloat(2, 5, 10))
                 ->setBodyWater($faker->randomFloat(2, 50, 60))
-                ->setUser($faker->randomElement($this->userRepository->findAll()));
+                ->setUser($faker->randomElement($this->userRepository->findAll()))
+                ->setCreatedAt(new DateTimeImmutable())
+                ->setUpdatedAt($faker->dateTime())
+                ;
 
             $manager->persist($measure);
         }
