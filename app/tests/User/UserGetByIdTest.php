@@ -65,4 +65,14 @@ class UserGetByIdTest extends TestCase
         $this->assertResponseCode($response, 403);
         $this->assertSame('Access Denied.', $output['detail']);
     }
+
+    public function testIfGetWithNotExistingUserNotWork(): void
+    {
+        $response = $this->httpGet($this->getUrl(99999), $this->getHeaders($this->getToken()));
+
+        $output = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 404);
+        $this->assertSame('Not Found', $output['detail']);
+    }
 }

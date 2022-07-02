@@ -10,7 +10,22 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *      itemOperations={
+ *          "get" = {
+ *              "security" = "is_granted('MEASURE_READ', object)",
+ *              "security_message" = "Access Denied.",
+ *           },
+ *          "put" = {
+ *              "security" = "is_granted('MEASURE_EDIT', object)",
+ *              "security_message" = "Access Denied.",
+ *           },
+ *          "delete" = {
+ *              "security" = "is_granted('MEASURE_DELETE', object)",
+ *              "security_message" = "Access Denied.",
+ *           }
+ *      }
+ * )
  * @ORM\Entity(repositoryClass=MeasureRepository::class)
  */
 class Measure

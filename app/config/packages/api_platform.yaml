@@ -9,6 +9,8 @@ api_platform:
         pagination_items_per_page: 10
         pagination_maximum_items_per_page: 20
         pagination_minimum_items_per_page: 3
+        pagination_client_items_per_page: true
     collection:
         pagination:
             items_per_page_parameter_name: perPage # Default value
+            items_per_page: 10

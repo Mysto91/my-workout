@@ -7,6 +7,7 @@ use App\DataFixtures\CardFixtures;
 use App\DataFixtures\MeasureFixtures;
 use App\DataFixtures\RoleFixtures;
 use App\DataFixtures\UserFixtures;
+use App\Repository\MeasureRepository;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,13 +16,9 @@ class TestCase extends JsonApiTestCase
 {
     /** @var AbstractDatabaseTool */
     protected $databaseTool;
-
     protected string $token;
-
     protected int $userAdminId = 1;
-
     protected int $userVisitorId = 2;
-
     protected static bool $initialized = false;
 
     protected function setUp(): void
@@ -49,6 +46,14 @@ class TestCase extends JsonApiTestCase
             'HTTP_Authorization' => "Bearer {$jwt}",
             'CONTENT_TYPE' => 'application/json'
         ];
+    }
+
+    /**
+     * @return array<Measure>
+     */
+    protected function getMeasures(): array
+    {
+        return $this->measureRepository->findAll();
     }
 
     /**
