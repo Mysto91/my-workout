@@ -7,6 +7,7 @@ use App\DataFixtures\CardFixtures;
 use App\DataFixtures\MeasureFixtures;
 use App\DataFixtures\RoleFixtures;
 use App\DataFixtures\UserFixtures;
+use App\Entity\Measure;
 use App\Repository\MeasureRepository;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
@@ -46,14 +47,6 @@ class TestCase extends JsonApiTestCase
             'HTTP_Authorization' => "Bearer {$jwt}",
             'CONTENT_TYPE' => 'application/json'
         ];
-    }
-
-    /**
-     * @return array<Measure>
-     */
-    protected function getMeasures(): array
-    {
-        return $this->measureRepository->findAll();
     }
 
     /**

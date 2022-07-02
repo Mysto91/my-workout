@@ -11,7 +11,7 @@ class MeasureGetTest extends TestCase
 
     /**
      * @param array<array<string|integer>> $measures
-     * @param int|null $user
+     * @param int|null $userId
      *
      * @return void
      */

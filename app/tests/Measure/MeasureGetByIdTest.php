@@ -9,7 +9,11 @@ class MeasureGetByIdTest extends TestCase
 {
     private string $url = '/api/measures';
 
-    private function getUrl($measureId)
+    /**
+     * @param integer $measureId
+     * @return string
+     */
+    private function getUrl(int $measureId): string
     {
         return "{$this->url}/{$measureId}";
     }
