@@ -9,9 +9,11 @@ use App\DataFixtures\RoleFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\Measure;
 use App\Repository\MeasureRepository;
+use Doctrine\ORM\EntityRepository;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Symfony\Component\HttpFoundation\Response;
+use Webmozart\Assert\Assert;
 
 class TestCase extends JsonApiTestCase
 {
@@ -33,6 +35,12 @@ class TestCase extends JsonApiTestCase
             self::$initialized = true;
         }
 
+        $kernel = self::bootKernel();
+
+        $this->entityManager = $kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
         $this->token = getenv('JWT');
     }
 
@@ -47,6 +55,38 @@ class TestCase extends JsonApiTestCase
             'HTTP_Authorization' => "Bearer {$jwt}",
             'CONTENT_TYPE' => 'application/json'
         ];
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return EntityRepository
+     */
+    protected function getRepository(string $class): EntityRepository
+    {
+        $entityManager = $this->entityManager;
+        return $entityManager->getRepository($class);
+    }
+
+    /**
+     * @param int $userId
+     *
+     * @return array<Measure>
+     */
+    protected function getMeasuresByUserId(int $userId): array
+    {
+        return $this->getRepository(Measure::class)->findByUser($userId);
+    }
+
+    /**
+     * @param string $entity
+     * @param integer $id
+     *
+     * @return string
+     */
+    protected function getIri(string $entity, int $id): string
+    {
+        return "/api/{$entity}/{$id}";
     }
 
     /**

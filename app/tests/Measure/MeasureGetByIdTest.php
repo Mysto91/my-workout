@@ -2,6 +2,7 @@
 
 namespace App\Tests\Measure;
 
+use App\Entity\Measure;
 use App\Entity\User;
 use App\Tests\TestCase;
 
@@ -21,10 +22,11 @@ class MeasureGetByIdTest extends TestCase
     /**
      * @param array<string|integer> $measure
      * @param int $measureId
+     * @param int|null $userId
      *
      * @return void
      */
-    private function assertMeasure(array $measure, int $measureId): void
+    private function assertMeasure(array $measure, int $measureId, ?int $userId = null): void
     {
         $this->assertSame($measureId, $measure['id']);
         $this->assertIsNumeric($measure['weight']);
@@ -34,19 +36,27 @@ class MeasureGetByIdTest extends TestCase
         $this->assertIsNumeric($measure['bodyWater']);
         $this->assertIsString($measure['createdAt']);
         $this->assertIsString($measure['updatedAt']);
+
+        if ($userId) {
+            $this->assertSame($this->getIri('users', $userId), $measure['user']);
+        }
     }
 
-    // public function testIfGetWithVisitorUserWork(): void
-    // {
-    //     $userId = $this->userVisitorId;
-    //     $token = $this->getToken($this->authenticate("visitor_{$userId}", 'visitor'));
+    public function testIfGetWithVisitorUserWork(): void
+    {
+        $userId = $this->userVisitorId;
+        $token = $this->getToken($this->authenticate("visitor_{$userId}", 'visitor'));
 
-    //     $response = $this->httpGet($this->getUrl(1), $this->getHeaders($token));
-    //     $measure = json_decode($response->getContent(), true);
+        $userMeasures = $this->getMeasuresByUserId($userId);
+        $measure = $userMeasures[array_rand($userMeasures, 1)];
+        $measureId = $measure->getId();
 
-    //     $this->assertResponseCode($response, 200);
-    //     $this->assertMeasure($measure, $userId);
-    // }
+        $response = $this->httpGet($this->getUrl($measureId), $this->getHeaders($token));
+        $measure = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertMeasure($measure, $measureId, $userId);
+    }
 
     public function testIfGetWork(): void
     {
