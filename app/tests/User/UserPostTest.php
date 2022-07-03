@@ -85,9 +85,10 @@ class UserPostTest extends TestCase
     {
         $body = $this->formatBody();
 
-        $response = $this->httpPost($this->url, $this->getHeaders(), [], $body);
+        $users = $this->getUsers();
+        $user = $users[0];
 
-        $body['email'] = 'othermail@test.com';
+        $body['username'] = $user->getUsername();
 
         $response = $this->httpPost($this->url, $this->getHeaders(), [], $body);
 
@@ -101,9 +102,10 @@ class UserPostTest extends TestCase
     {
         $body = $this->formatBody();
 
-        $response = $this->httpPost($this->url, $this->getHeaders(), [], $body);
+        $users = $this->getUsers();
+        $user = $users[0];
 
-        $body['username'] = 'otherusername';
+        $body['email'] = $user->getEmail();
 
         $response = $this->httpPost($this->url, $this->getHeaders(), [], $body);
 
