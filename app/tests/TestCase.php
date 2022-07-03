@@ -10,6 +10,7 @@ use App\DataFixtures\UserFixtures;
 use App\Entity\Measure;
 use App\Entity\Role;
 use App\Entity\User;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
@@ -23,6 +24,7 @@ class TestCase extends JsonApiTestCase
     protected int $userAdminId = 1;
     protected int $userVisitorId = 2;
     protected static bool $initialized = false;
+    private ?EntityManager $entityManager;
 
     protected function setUp(): void
     {
@@ -64,6 +66,7 @@ class TestCase extends JsonApiTestCase
      */
     protected function getRepository(string $class): EntityRepository
     {
+        /** @phpstan-ignore-next-line */
         return $this->entityManager->getRepository($class);
     }
 
@@ -78,7 +81,7 @@ class TestCase extends JsonApiTestCase
     }
 
     /**
-     * @return array
+     * @return array<Measure>
      */
     protected function getMeasures(): array
     {
@@ -86,9 +89,9 @@ class TestCase extends JsonApiTestCase
     }
 
     /**
-     * @param string|null $role
+     * @param string|null $roleLabel
      *
-     * @return array
+     * @return array<User>
      */
     protected function getUsers(?string $roleLabel = null): array
     {
