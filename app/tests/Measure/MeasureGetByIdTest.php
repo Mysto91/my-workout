@@ -2,8 +2,6 @@
 
 namespace App\Tests\Measure;
 
-use App\Entity\Measure;
-use App\Entity\User;
 use App\Tests\TestCase;
 
 class MeasureGetByIdTest extends TestCase
@@ -44,8 +42,11 @@ class MeasureGetByIdTest extends TestCase
 
     public function testIfGetWithVisitorUserWork(): void
     {
-        $userId = $this->userVisitorId;
-        $token = $this->getToken($this->authenticate("visitor_{$userId}", 'visitor'));
+        $users = $this->getUsers('visitor');
+        $user = $users[0];
+        $userId = $user->getId();
+
+        $token = $this->getToken($this->authenticate($user->getUsername(), 'visitor'));
 
         $userMeasures = $this->getMeasuresByUserId($userId);
         $measure = $userMeasures[array_rand($userMeasures, 1)];
@@ -60,13 +61,32 @@ class MeasureGetByIdTest extends TestCase
 
     public function testIfGetWork(): void
     {
-        $measureId = 1;
+        $measures = $this->getMeasures();
+        $measureId = $measures[0]->getId();
 
         $response = $this->httpGet($this->getUrl($measureId), $this->getHeaders($this->token));
         $measure = json_decode($response->getContent(), true);
 
         $this->assertResponseCode($response, 200);
         $this->assertMeasure($measure, $measureId);
+    }
+
+    public function testIfGetAnotherUserMeasureWithVisitorUserWork(): void
+    {
+        $users = $this->getUsers('visitor');
+
+        $visitorUser = $users[0];
+        $otherUser = $users[1];
+
+        $token = $this->getToken($this->authenticate($visitorUser->getUsername(), 'visitor'));
+
+        $otherUserMeasures = $this->getMeasuresByUserId($otherUser->getId());
+
+        $response = $this->httpGet($this->getUrl($otherUserMeasures[0]->getId()), $this->getHeaders($token));
+        $output = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 403);
+        $this->assertSame('Access Denied.', $output['detail']);
     }
 
     public function testIfGetWithoutAuthenticationNotWork(): void

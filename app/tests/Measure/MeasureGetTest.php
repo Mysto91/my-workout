@@ -49,15 +49,18 @@ class MeasureGetTest extends TestCase
         $response = $this->httpGet($this->url, $this->getHeaders($this->token));
         $measures = json_decode($response->getContent(), true);
 
-        $this->assertCount(49, $measures);
+        $this->assertCount(count($this->getMeasures()), $measures);
         $this->assertResponseCode($response, 200);
         $this->assertMeasures($measures);
     }
 
     public function testIfGetWithVisitorUserWork(): void
     {
-        $userId = $this->userVisitorId;
-        $token = $this->getToken($this->authenticate("visitor_{$userId}", 'visitor'));
+        $users = $this->getUsers('visitor');
+        $user = $users[0];
+        $userId = $user->getId();
+
+        $token = $this->getToken($this->authenticate($user->getUsername(), 'visitor'));
 
         $response = $this->httpGet($this->url, $this->getHeaders($token));
         $measures = json_decode($response->getContent(), true);

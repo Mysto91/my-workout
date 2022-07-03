@@ -8,12 +8,12 @@ use App\DataFixtures\MeasureFixtures;
 use App\DataFixtures\RoleFixtures;
 use App\DataFixtures\UserFixtures;
 use App\Entity\Measure;
-use App\Repository\MeasureRepository;
+use App\Entity\Role;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Symfony\Component\HttpFoundation\Response;
-use Webmozart\Assert\Assert;
 
 class TestCase extends JsonApiTestCase
 {
@@ -64,8 +64,7 @@ class TestCase extends JsonApiTestCase
      */
     protected function getRepository(string $class): EntityRepository
     {
-        $entityManager = $this->entityManager;
-        return $entityManager->getRepository($class);
+        return $this->entityManager->getRepository($class);
     }
 
     /**
@@ -76,6 +75,29 @@ class TestCase extends JsonApiTestCase
     protected function getMeasuresByUserId(int $userId): array
     {
         return $this->getRepository(Measure::class)->findByUser($userId);
+    }
+
+    /**
+     * @return array
+     */
+    protected function getMeasures(): array
+    {
+        return $this->getRepository(Measure::class)->findAll();
+    }
+
+    /**
+     * @param string|null $role
+     *
+     * @return array
+     */
+    protected function getUsers(?string $roleLabel = null): array
+    {
+        if ($roleLabel) {
+            $role = $this->getRepository(Role::class)->findByLabel($roleLabel);
+            return $this->getRepository(User::class)->findByRole($role[0]->getId());
+        }
+
+        return $this->getRepository(User::class)->findAll();
     }
 
     /**

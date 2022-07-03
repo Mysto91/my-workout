@@ -36,10 +36,13 @@ class UserGetByIdTest extends TestCase
 
     public function testIfGetWork(): void
     {
-        $userId = $this->userVisitorId;
-        $jwt = $this->getToken($this->authenticate("visitor_{$userId}", 'visitor'));
+        $users = $this->getUsers('visitor');
+        $user = $users[0];
+        $userId = $user->getId();
 
-        $response = $this->httpGet($this->getUrl($userId), $this->getHeaders($jwt));
+        $token = $this->getToken($this->authenticate($user->getUsername(), 'visitor'));
+
+        $response = $this->httpGet($this->getUrl($userId), $this->getHeaders($token));
         $user = json_decode($response->getContent(), true);
 
         $this->assertUser($user, $userId);
@@ -47,7 +50,9 @@ class UserGetByIdTest extends TestCase
 
     public function testIfGetWithAdminUserWork(): void
     {
-        $response = $this->httpGet($this->getUrl($this->userVisitorId), $this->getHeaders($this->token));
+        $users = $this->getUsers('visitor');
+
+        $response = $this->httpGet($this->getUrl($users[0]->getId()), $this->getHeaders($this->token));
         $user = json_decode($response->getContent(), true);
 
         $this->assertUser($user, $this->userVisitorId);
@@ -55,10 +60,14 @@ class UserGetByIdTest extends TestCase
 
     public function testIfGetAnotherUserWithVisitorUserNotWork(): void
     {
-        $userId = $this->userVisitorId + 1;
-        $jwt = $this->getToken($this->authenticate("visitor_{$userId}", 'visitor'));
+        $users = $this->getUsers('visitor');
 
-        $response = $this->httpGet($this->getUrl($this->userVisitorId), $this->getHeaders($jwt));
+        $visitorUser = $users[0];
+        $otherUser = $users[1];
+
+        $token = $this->getToken($this->authenticate($visitorUser->getUsername(), 'visitor'));
+
+        $response = $this->httpGet($this->getUrl($otherUser->getId()), $this->getHeaders($token));
 
         $output = json_decode($response->getContent(), true);
 
