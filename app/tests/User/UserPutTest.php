@@ -3,7 +3,6 @@
 namespace App\Tests\Card;
 
 use App\Tests\TestCase;
-use Faker\Factory;
 
 class UserPutTest extends TestCase
 {
@@ -24,7 +23,7 @@ class UserPutTest extends TestCase
      */
     private function formatBody(): array
     {
-        $faker = Factory::create();
+        $faker = $this->faker;
 
         return [
             'username' => $faker->userName(),

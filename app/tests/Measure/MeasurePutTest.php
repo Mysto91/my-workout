@@ -4,7 +4,7 @@ namespace App\Tests\Measure;
 
 use App\Tests\TestCase;
 
-class MeasureGetByIdTest extends TestCase
+class MeasurePutTest extends TestCase
 {
     private string $url = '/api/measures';
 
@@ -15,6 +15,23 @@ class MeasureGetByIdTest extends TestCase
     private function getUrl(int $measureId): string
     {
         return "{$this->url}/{$measureId}";
+    }
+
+    /**
+     * @return array<string,string|array<string,mixed>>
+     */
+    private function formatBody(int $userId): array
+    {
+        $faker = $this->faker;
+
+        return [
+            'weight' => $faker->randomFloat(2, 60, 70),
+            'muscleWeight' => $faker->randomFloat(2, 50, 60),
+            'measurementDate' => $faker->dateTimeBetween('-1 year', '-1 day')->format('Y-m-d H:i:s'),
+            'boneMass' => $faker->randomFloat(2, 5, 10),
+            'bodyWater' => $faker->randomFloat(2, 50, 60),
+            'user' => "/api/users/{$userId}",
+        ];
     }
 
     /**
@@ -40,7 +57,7 @@ class MeasureGetByIdTest extends TestCase
         }
     }
 
-    public function testIfGetWithVisitorUserWork(): void
+    public function testIfPutWithVisitorUserWork(): void
     {
         $users = $this->getUsers('visitor');
         $user = $users[0];
@@ -52,26 +69,35 @@ class MeasureGetByIdTest extends TestCase
         $measure = $userMeasures[array_rand($userMeasures, 1)];
         $measureId = $measure->getId();
 
-        $response = $this->httpGet($this->getUrl($measureId), $this->getHeaders($token));
+        $body = $this->formatBody($userId);
+
+        $response = $this->httpPut($this->getUrl($measureId), $this->getHeaders($token), [], $body);
         $measure = json_decode($response->getContent(), true);
 
         $this->assertResponseCode($response, 200);
         $this->assertMeasure($measure, $measureId, $userId);
     }
 
-    public function testIfGetWork(): void
+    public function testIfPutAnotherUserMeasureWithAdminUserWork(): void
     {
-        $measures = $this->getMeasures();
-        $measureId = $measures[0]->getId();
+        $otherUsers = $this->getUsers('visitor');
+        $otherUser = $otherUsers[0];
+        $otherUserId = $otherUser->getId();
 
-        $response = $this->httpGet($this->getUrl($measureId), $this->getHeaders($this->token));
+        $userMeasures = $this->getMeasuresByUserId($otherUserId);
+        $measure = $userMeasures[array_rand($userMeasures, 1)];
+        $measureId = $measure->getId();
+
+        $body = $this->formatBody($otherUserId);
+
+        $response = $this->httpPut($this->getUrl($measureId), $this->getHeaders($this->token), [], $body);
         $measure = json_decode($response->getContent(), true);
 
         $this->assertResponseCode($response, 200);
         $this->assertMeasure($measure, $measureId);
     }
 
-    public function testIfGetAnotherUserMeasureWithVisitorUserNotWork(): void
+    public function testIfPutAnotherUserMeasureWithVisitorUserNotWork(): void
     {
         $users = $this->getUsers('visitor');
 
@@ -82,24 +108,24 @@ class MeasureGetByIdTest extends TestCase
 
         $otherUserMeasures = $this->getMeasuresByUserId($otherUser->getId());
 
-        $response = $this->httpGet($this->getUrl($otherUserMeasures[0]->getId()), $this->getHeaders($token));
+        $response = $this->httpPut($this->getUrl($otherUserMeasures[0]->getId()), $this->getHeaders($token));
         $output = json_decode($response->getContent(), true);
 
         $this->assertResponseCode($response, 403);
         $this->assertSame('Access Denied.', $output['detail']);
     }
 
-    public function testIfGetWithoutAuthenticationNotWork(): void
+    public function testIfPutWithoutAuthenticationNotWork(): void
     {
-        $response = $this->httpGet($this->url, $this->getHeaders());
+        $response = $this->httpPut($this->getUrl(1), $this->getHeaders());
 
         $this->assertResponseCode($response, 401);
         $this->assertJson(json_encode(['code' => '401', 'message' => 'JWT Token not found']));
     }
 
-    public function testIfGetWithNotExistingMeasureNotWork(): void
+    public function testIfPutWithNotExistingMeasureNotWork(): void
     {
-        $response = $this->httpGet($this->getUrl(99999), $this->getHeaders($this->token));
+        $response = $this->httpPut($this->getUrl(99999), $this->getHeaders($this->token));
         $output = json_decode($response->getContent(), true);
 
         $this->assertResponseCode($response, 404);

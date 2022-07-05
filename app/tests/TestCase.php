@@ -12,6 +12,7 @@ use App\Entity\Role;
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Faker\Factory;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,6 +26,7 @@ class TestCase extends JsonApiTestCase
     protected int $userVisitorId = 2;
     protected static bool $initialized = false;
     private ?EntityManager $entityManager;
+    protected \Faker\Generator $faker;
 
     protected function setUp(): void
     {
@@ -44,6 +46,7 @@ class TestCase extends JsonApiTestCase
             ->getManager();
 
         $this->token = getenv('JWT');
+        $this->faker = Factory::create();
     }
 
     /**
