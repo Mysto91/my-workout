@@ -39,6 +39,7 @@ class MeasurePostTest extends TestCase
         $this->assertEquals($expected['muscleWeight'], $actual['muscleWeight']);
         $this->assertEquals($expected['boneMass'], $actual['boneMass']);
         $this->assertEquals($expected['bodyWater'], $actual['bodyWater']);
+        $this->assertEquals($expected['user'], $actual['user']);
 
         $now = new DateTime();
         $dateCreatedAt = new DateTime($actual['createdAt']);
@@ -65,5 +66,30 @@ class MeasurePostTest extends TestCase
 
         $this->assertResponseCode($response, 201);
         $this->assertMeasure($body, $measure);
+    }
+
+    public function testIfPostWithVisitorUserWork(): void
+    {
+        $users = $this->getUsers('visitor');
+        $user = $users[0];
+        $userId = $user->getId();
+
+        $token = $this->getToken($this->authenticate($user->getUsername(), 'visitor'));
+
+        $body = $this->formatBody($userId);
+
+        $response = $this->httpPost($this->url, $this->getHeaders($token), [], $body);
+        $measure = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 201);
+        $this->assertMeasure($body, $measure);
+    }
+
+    public function testIfPostWithoutAuthenticationNotWork(): void
+    {
+        $response = $this->httpPost($this->url, $this->getHeaders());
+
+        $this->assertResponseCode($response, 401);
+        $this->assertJson(json_encode(['code' => '401', 'message' => 'JWT Token not found']));
     }
 }
