@@ -52,38 +52,6 @@ class UserPutTest extends TestCase
         $this->assertSame($expected['username'], $actual['username']);
     }
 
-    public function testIfPutWork(): void
-    {
-        $users = $this->getUsers('visitor');
-        $user = $users[0];
-
-        $body = $this->formatBody();
-        $body['username'] = $user->getUsername();
-        $body['password'] = 'visitor';
-
-        $response = $this->httpPut($this->getUrl($user->getId()), $this->getHeaders($this->token), [], $body);
-        $output = json_decode($response->getContent(), true);
-
-        $this->assertResponseCode($response, 200);
-        $this->assertUser($body, $output);
-    }
-
-    public function testIfPutOwnUserWithVisitorUserWork(): void
-    {
-        $users = $this->getUsers('visitor');
-        $user = $users[0];
-
-        $body = $this->formatBody();
-
-        $token = $this->getToken($this->authenticate($user->getUsername(), 'visitor'));
-
-        $response = $this->httpPut($this->getUrl($user->getId()), $this->getHeaders($token), [], $body);
-        $output = json_decode($response->getContent(), true);
-
-        $this->assertResponseCode($response, 200);
-        $this->assertUser($body, $output);
-    }
-
     public function testIfPutWithEmptyRoleNotWork(): void
     {
         $body = $this->formatBody();
@@ -231,5 +199,37 @@ class UserPutTest extends TestCase
 
         $this->assertResponseCode($response, 403);
         $this->assertStringContainsString('Access Denied.', $output['detail']);
+    }
+
+    public function testIfPutWork(): void
+    {
+        $users = $this->getUsers('visitor');
+        $user = $users[0];
+
+        $body = $this->formatBody();
+        $body['username'] = $user->getUsername();
+        $body['password'] = 'visitor';
+
+        $response = $this->httpPut($this->getUrl($user->getId()), $this->getHeaders($this->token), [], $body);
+        $output = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertUser($body, $output);
+    }
+
+    public function testIfPutOwnUserWithVisitorUserWork(): void
+    {
+        $users = $this->getUsers('visitor');
+        $user = $users[0];
+
+        $body = $this->formatBody();
+
+        $token = $this->getToken($this->authenticate($user->getUsername(), 'visitor'));
+
+        $response = $this->httpPut($this->getUrl($user->getId()), $this->getHeaders($token), [], $body);
+        $output = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 200);
+        $this->assertUser($body, $output);
     }
 }
