@@ -18,7 +18,9 @@ class MeasurePutTest extends TestCase
     }
 
     /**
-     * @return array<string,string|array<string,mixed>>
+     * @param int $userId
+     *
+     * @return array<string,string|float>
      */
     private function formatBody(int $userId): array
     {

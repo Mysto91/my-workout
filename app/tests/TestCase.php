@@ -10,6 +10,7 @@ use App\DataFixtures\UserFixtures;
 use App\Entity\Measure;
 use App\Entity\Role;
 use App\Entity\User;
+use DateTime;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Faker\Factory;
@@ -167,6 +168,28 @@ class TestCase extends JsonApiTestCase
         $response = json_decode($this->client->getResponse()->getContent(), true);
 
         return $response['token'] ?? '';
+    }
+
+    /**
+     * @return DateTime
+     */
+    protected function getToday(): DateTime
+    {
+        return new DateTime();
+    }
+
+    /**
+     * @param string $date
+     * @return DateTime
+     */
+    protected function getDate(string $date): DateTime
+    {
+        return new DateTime($date);
+    }
+
+    protected function assertSameDate(DateTime $expectedDate, DateTime $actualDate): void
+    {
+        $this->assertSame($expectedDate->getTimestamp(), $actualDate->getTimestamp());
     }
 
     protected function tearDown(): void

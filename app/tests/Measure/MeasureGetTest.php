@@ -2,7 +2,6 @@
 
 namespace App\Tests\Measure;
 
-use App\Entity\User;
 use App\Tests\TestCase;
 
 class MeasureGetTest extends TestCase

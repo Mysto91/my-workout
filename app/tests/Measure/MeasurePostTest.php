@@ -3,14 +3,13 @@
 namespace App\Tests\Card;
 
 use App\Tests\TestCase;
-use DateTime;
 
 class MeasurePostTest extends TestCase
 {
     private string $url = '/api/measures';
 
     /**
-     * @return array<string,string|array<string,mixed>>
+     * @return array<string,float|string>
      */
     private function formatBody(int $userId): array
     {
@@ -27,9 +26,8 @@ class MeasurePostTest extends TestCase
     }
 
     /**
-     * @param array<string|integer> $measure
-     * @param int $measureId
-     * @param int|null $userId
+     * @param array<string|integer> $expected
+     * @param array<string|integer> $actual
      *
      * @return void
      */
@@ -40,17 +38,9 @@ class MeasurePostTest extends TestCase
         $this->assertEquals($expected['boneMass'], $actual['boneMass']);
         $this->assertEquals($expected['bodyWater'], $actual['bodyWater']);
         $this->assertEquals($expected['user'], $actual['user']);
-
-        $now = new DateTime();
-        $dateCreatedAt = new DateTime($actual['createdAt']);
-
-        $this->assertSame($now->getTimestamp(), $dateCreatedAt->getTimestamp());
+        $this->assertSameDate($this->getToday(), $this->getDate($actual['createdAt']));
+        $this->assertSameDate($this->getDate($expected['measurementDate']), $this->getDate($actual['measurementDate']));
         $this->assertArrayNotHasKey('updatedAt', $actual);
-
-        $expectedMeasurementDate = new DateTime($expected['measurementDate']);
-        $actualMeasurementDate = new DateTime($actual['measurementDate']);
-
-        $this->assertSame($expectedMeasurementDate->getTimestamp(), $actualMeasurementDate->getTimestamp());
     }
 
     public function testIfPostWork(): void
@@ -83,6 +73,113 @@ class MeasurePostTest extends TestCase
 
         $this->assertResponseCode($response, 201);
         $this->assertMeasure($body, $measure);
+    }
+
+    public function testIfPostWithWrongFormatWeightNotWork(): void
+    {
+        $users = $this->getUsers('admin');
+        $user = $users[0];
+        $userId = $user->getId();
+
+        $body = $this->formatBody($userId);
+        $body['weight'] = 'wrong';
+
+        $response = $this->httpPost($this->url, $this->getHeaders($this->token), [], $body);
+        $output = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertSame('The type of the "weight" attribute must be "float", "string" given.', $output['detail']);
+    }
+
+    public function testIfPostWithWrongFormatMuscleWeightNotWork(): void
+    {
+        $users = $this->getUsers('admin');
+        $user = $users[0];
+        $userId = $user->getId();
+
+        $body = $this->formatBody($userId);
+        $body['muscleWeight'] = 'wrong';
+
+        $response = $this->httpPost($this->url, $this->getHeaders($this->token), [], $body);
+        $output = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertSame('The type of the "muscleWeight" attribute must be "float", "string" given.', $output['detail']);
+    }
+
+    // public function testIfPostWithWrongFormatMeasurementDateNotWork(): void
+    // {
+    //     $users = $this->getUsers('admin');
+    //     $user = $users[0];
+    //     $userId = $user->getId();
+
+    //     $body = $this->formatBody($userId);
+    //     $body['measurementDate'] = 'wrong';
+
+    //     $response = $this->httpPost($this->url, $this->getHeaders($this->token), [], $body);
+    //     $output = json_decode($response->getContent(), true);
+
+    //     $this->assertResponseCode($response, 400);
+    //     $this->assertSame('The measurementDate is invalid format.', $output['detail']);
+    // }
+
+    public function testIfPostWithWrongFormatBoneMassNotWork(): void
+    {
+        $users = $this->getUsers('admin');
+        $user = $users[0];
+        $userId = $user->getId();
+
+        $body = $this->formatBody($userId);
+        $body['boneMass'] = 'wrong';
+
+        $response = $this->httpPost($this->url, $this->getHeaders($this->token), [], $body);
+        $output = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertSame('The type of the "boneMass" attribute must be "float", "string" given.', $output['detail']);
+    }
+
+    public function testIfPostWithWrongFormatBodyWaterNotWork(): void
+    {
+        $users = $this->getUsers('admin');
+        $user = $users[0];
+        $userId = $user->getId();
+
+        $body = $this->formatBody($userId);
+        $body['bodyWater'] = 'wrong';
+
+        $response = $this->httpPost($this->url, $this->getHeaders($this->token), [], $body);
+        $output = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertSame('The type of the "bodyWater" attribute must be "float", "string" given.', $output['detail']);
+    }
+
+    public function testIfPostWithWrongFormatIriUserNotWork(): void
+    {
+        $users = $this->getUsers('admin');
+        $user = $users[0];
+        $userId = $user->getId();
+
+        $body = $this->formatBody($userId);
+        $body['user'] = 'wrong';
+
+        $response = $this->httpPost($this->url, $this->getHeaders($this->token), [], $body);
+        $output = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertSame('Invalid IRI "wrong".', $output['detail']);
+    }
+
+    public function testIfPostWithNotExistingUserNotWork(): void
+    {
+        $body = $this->formatBody(99999);
+
+        $response = $this->httpPost($this->url, $this->getHeaders($this->token), [], $body);
+        $output = json_decode($response->getContent(), true);
+
+        $this->assertResponseCode($response, 400);
+        $this->assertSame('Item not found for "/api/users/99999".', $output['detail']);
     }
 
     public function testIfPostWithoutAuthenticationNotWork(): void
