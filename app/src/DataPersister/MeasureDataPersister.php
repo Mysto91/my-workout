@@ -37,7 +37,12 @@ final class MeasureDataPersister implements ContextAwareDataPersisterInterface
      */
     public function persist($data, array $context = []): Measure
     {
-        $data->setCreatedAt(new DateTimeImmutable());
+        if (isset($context['previous_data']) && $context['item_operation_name'] === 'put') {
+            $data->setUpdatedAt(new DateTimeImmutable());
+        } else {
+            $data->setCreatedAt(new DateTimeImmutable());
+        }
+
         $this->entityManager->persist($data);
         $this->entityManager->flush();
 
