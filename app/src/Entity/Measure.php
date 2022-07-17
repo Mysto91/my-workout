@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use App\Repository\MeasureRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use DateTimeImmutable;
@@ -26,6 +29,7 @@ use Doctrine\ORM\Mapping as ORM;
  *           }
  *      }
  * )
+ * @ApiFilter(NumericFilter::class, properties={"user": "exact", "weight": "exact"})
  * @ORM\Entity(repositoryClass=MeasureRepository::class)
  */
 class Measure

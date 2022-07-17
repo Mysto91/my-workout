@@ -107,21 +107,21 @@ class MeasurePostTest extends TestCase
         $this->assertSame('The type of the "muscleWeight" attribute must be "float", "string" given.', $output['detail']);
     }
 
-    // public function testIfPostWithWrongFormatMeasurementDateNotWork(): void
-    // {
-    //     $users = $this->getUsers('admin');
-    //     $user = $users[0];
-    //     $userId = $user->getId();
+    public function testIfPostWithWrongFormatMeasurementDateNotWork(): void
+    {
+        $users = $this->getUsers('admin');
+        $user = $users[0];
+        $userId = $user->getId();
 
-    //     $body = $this->formatBody($userId);
-    //     $body['measurementDate'] = 'wrong';
+        $body = $this->formatBody($userId);
+        $body['measurementDate'] = 'wrong';
 
-    //     $response = $this->httpPost($this->url, $this->getHeaders($this->token), [], $body);
-    //     $output = json_decode($response->getContent(), true);
+        $response = $this->httpPost($this->url, $this->getHeaders($this->token), [], $body);
+        $output = json_decode($response->getContent(), true);
 
-    //     $this->assertResponseCode($response, 400);
-    //     $this->assertSame('The measurementDate is invalid format.', $output['detail']);
-    // }
+        $this->assertResponseCode($response, 400);
+        $this->assertSame('The date time is invalid format.', $output['hydra:description']);
+    }
 
     public function testIfPostWithWrongFormatBoneMassNotWork(): void
     {

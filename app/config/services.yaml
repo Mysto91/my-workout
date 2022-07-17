@@ -16,9 +16,9 @@ services:
         public:     false
         tags:
             - { name: security.voter }
-    card.search_filter:
-        parent: 'api_platform.doctrine.orm.search_filter'
-        arguments: [ { title: 'partial', point: 'exact', description: 'partial' } ]
+    measure.numeric_filter:
+        parent: 'api_platform.doctrine.orm.numeric_filter'
+        arguments: [ { weight: ~ } ]
         tags:  [ 'api_platform.filter' ]
         # The following are mandatory only if a _defaults section is defined with inverted values.
         # You may want to isolate filters in a dedicated file to avoid adding the following lines (by adding them in the defaults section)
