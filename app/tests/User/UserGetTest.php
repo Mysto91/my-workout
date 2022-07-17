@@ -48,9 +48,13 @@ class UserGetTest extends TestCase
 
     public function testIfGetWithVisitorUserNotWork(): void
     {
-        $jwt = $this->getToken(['username' => "visitor_{$this->userVisitorId}", 'password' => 'visitor']);
+        $users = $this->getUsers('visitor');
 
-        $response = $this->httpGet($this->url, $this->getHeaders($jwt));
+        $visitorUser = $users[0];
+
+        $token = $this->getToken($this->authenticate($visitorUser->getUsername(), 'visitor'));
+
+        $response = $this->httpGet($this->url, $this->getHeaders($token));
 
         $output = json_decode($response->getContent(), true);
 

@@ -1,5 +1,10 @@
 parameters:
+	checkGenericClassInNonGenericObjectType: false
 	level: 6
 	paths:
 		- src
 		- tests
+	ignoreErrors:
+		- '#Call to an undefined method [a-zA-Z0-9\\_]+::findByUser\(\)#'
+		- '#Call to an undefined method [a-zA-Z0-9\\_]+::findByLabel\(\)#'
+		- '#Call to an undefined method [a-zA-Z0-9\\_]+::findByRole\(\)#'

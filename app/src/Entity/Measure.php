@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\NumericFilter;
 use App\Repository\MeasureRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 use DateTimeImmutable;
@@ -10,7 +13,23 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ApiResource()
+ * @ApiResource(
+ *      itemOperations={
+ *          "get" = {
+ *              "security" = "is_granted('MEASURE_READ', object)",
+ *              "security_message" = "Access Denied.",
+ *           },
+ *          "put" = {
+ *              "security" = "is_granted('MEASURE_EDIT', object)",
+ *              "security_message" = "Access Denied.",
+ *           },
+ *          "delete" = {
+ *              "security" = "is_granted('MEASURE_DELETE', object)",
+ *              "security_message" = "Access Denied.",
+ *           }
+ *      }
+ * )
+ * @ApiFilter(NumericFilter::class, properties={"user": "exact", "weight": "exact"})
  * @ORM\Entity(repositoryClass=MeasureRepository::class)
  */
 class Measure

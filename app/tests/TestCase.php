@@ -7,6 +7,13 @@ use App\DataFixtures\CardFixtures;
 use App\DataFixtures\MeasureFixtures;
 use App\DataFixtures\RoleFixtures;
 use App\DataFixtures\UserFixtures;
+use App\Entity\Measure;
+use App\Entity\Role;
+use App\Entity\User;
+use DateTime;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
+use Faker\Factory;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,14 +22,12 @@ class TestCase extends JsonApiTestCase
 {
     /** @var AbstractDatabaseTool */
     protected $databaseTool;
-
     protected string $token;
-
     protected int $userAdminId = 1;
-
     protected int $userVisitorId = 2;
-
     protected static bool $initialized = false;
+    private ?EntityManager $entityManager;
+    protected \Faker\Generator $faker;
 
     protected function setUp(): void
     {
@@ -35,7 +40,14 @@ class TestCase extends JsonApiTestCase
             self::$initialized = true;
         }
 
+        $kernel = self::bootKernel();
+
+        $this->entityManager = $kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
+
         $this->token = getenv('JWT');
+        $this->faker = Factory::create();
     }
 
     /**
@@ -49,6 +61,61 @@ class TestCase extends JsonApiTestCase
             'HTTP_Authorization' => "Bearer {$jwt}",
             'CONTENT_TYPE' => 'application/json'
         ];
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return EntityRepository
+     */
+    protected function getRepository(string $class): EntityRepository
+    {
+        /** @phpstan-ignore-next-line */
+        return $this->entityManager->getRepository($class);
+    }
+
+    /**
+     * @param int $userId
+     *
+     * @return array<Measure>
+     */
+    protected function getMeasuresByUserId(int $userId): array
+    {
+        return $this->getRepository(Measure::class)->findByUser($userId);
+    }
+
+    /**
+     * @return array<Measure>
+     */
+    protected function getMeasures(): array
+    {
+        return $this->getRepository(Measure::class)->findAll();
+    }
+
+    /**
+     * @param string|null $roleLabel
+     *
+     * @return array<User>
+     */
+    protected function getUsers(?string $roleLabel = null): array
+    {
+        if ($roleLabel) {
+            $role = $this->getRepository(Role::class)->findByLabel($roleLabel);
+            return $this->getRepository(User::class)->findByRole($role[0]->getId());
+        }
+
+        return $this->getRepository(User::class)->findAll();
+    }
+
+    /**
+     * @param string $entity
+     * @param integer $id
+     *
+     * @return string
+     */
+    protected function getIri(string $entity, int $id): string
+    {
+        return "/api/{$entity}/{$id}";
     }
 
     /**
@@ -101,6 +168,28 @@ class TestCase extends JsonApiTestCase
         $response = json_decode($this->client->getResponse()->getContent(), true);
 
         return $response['token'] ?? '';
+    }
+
+    /**
+     * @return DateTime
+     */
+    protected function getToday(): DateTime
+    {
+        return new DateTime();
+    }
+
+    /**
+     * @param string $date
+     * @return DateTime
+     */
+    protected function getDate(string $date): DateTime
+    {
+        return new DateTime($date);
+    }
+
+    protected function assertSameDate(DateTime $expectedDate, DateTime $actualDate): void
+    {
+        $this->assertSame($expectedDate->getTimestamp(), $actualDate->getTimestamp());
     }
 
     protected function tearDown(): void

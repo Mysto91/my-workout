@@ -1,0 +1,4 @@
+App\Entity\Measure:
+    collectionOperations:
+        get:
+            filters: ['measure.numeric_filter']
