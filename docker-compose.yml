@@ -45,6 +45,7 @@ services:
     working_dir: '/app/app'
     command:
       - |
+        composer install
         php bin/console doctrine:migration:migrate --no-interaction
         php bin/console doctrine:fixtures:load --no-interaction
     depends_on:
