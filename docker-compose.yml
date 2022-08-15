@@ -20,7 +20,7 @@ services:
     depends_on:
       - database
       - migration
-    entrypoint: /app/app/entrypoint.sh
+    entrypoint: ["sh", "/app/app/entrypoint.sh"]
   database:
     image: 'bitnami/mysql:5.7.38'
     restart: always
@@ -45,6 +45,7 @@ services:
     working_dir: '/app/app'
     command:
       - |
+        composer install
         php bin/console doctrine:migration:migrate --no-interaction
         php bin/console doctrine:fixtures:load --no-interaction
     depends_on:

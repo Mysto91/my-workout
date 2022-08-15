@@ -34,7 +34,7 @@ class MeasureFixtures extends Fixture implements DependentFixtureInterface
                 ->setUser($faker->randomElement($this->userRepository->findAll()))
                 ->setCreatedAt(new DateTimeImmutable())
                 ->setUpdatedAt($faker->dateTime())
-                ;
+            ;
 
             $manager->persist($measure);
         }

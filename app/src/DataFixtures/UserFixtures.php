@@ -36,7 +36,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             ->setFirstname($faker->firstName())
             ->setRole($this->getReference(RoleFixtures::ADMIN_ROLE))
             ->setCreatedAt(new DateTimeImmutable())
-            ;
+        ;
 
         $manager->persist($adminUser);
 
@@ -54,7 +54,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
                 ->setFirstname($faker->firstName())
                 ->setRole($this->getReference(RoleFixtures::VISITOR_ROLE))
                 ->setCreatedAt(new DateTimeImmutable())
-                ;
+            ;
 
             $manager->persist($visitorUser);
 
